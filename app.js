@@ -2,8 +2,11 @@ const express = require("express");
 const app = express();
 
 const { NotFoundError } = require("./expressError");
+const itemRoutes = require("./routing/itemRoutes");
 
 app.use(express.json());
+
+app.use("/items", itemRoutes);
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res) {
