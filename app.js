@@ -7,7 +7,7 @@ const { checkItem } = require("./routing/middleware")
 
 app.use(express.json());
 
-app.use("/items/:name", checkItem);
+// app.use("/items/:name", checkItem);
 app.use("/items", itemRoutes);
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */

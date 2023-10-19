@@ -10,10 +10,12 @@ let popsicle = {
 
 beforeEach(function () {
   items.push(popsicle);
+  console.log(items)
 });
 
 afterEach(function () {
-  items = [];
+  // items = [];
+  items.length = 0;
 });
 
 /** GET /items - returns `{items: [item, ...]}` */
@@ -88,10 +90,11 @@ describe("PATCH /items/:name", function () {
 
 describe("DELETE /items/:name", function () {
   it("Deletes a single item", async function () {
+    console.log(popsicle.name)
     const resp = await request(app)
       .delete(`/items/${popsicle.name}`);
     expect(resp.statusCode).toEqual(200);
     expect(resp.body).toEqual({ message: "Deleted" });
-    // expect(items.length).toEqual(0);
+    expect(items.length).toEqual(0);
   });
 });

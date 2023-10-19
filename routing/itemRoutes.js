@@ -2,6 +2,7 @@ const express = require("express");
 
 const { items } = require("../fakeDb");
 const { BadRequestError } = require("../expressError");
+const { checkItem } = require("./middleware");
 const router = new express.Router();
 
 /** GET /items: get list of items */
@@ -11,7 +12,8 @@ router.get("/", function (req, res) {
 
 /** POST /items: accept JSON body, add item, and return it */
 router.post("/", function (req, res) {
-  if (!req.body.name || !req.body.price) {
+  // TODO: optional chaining to check if req.body exists
+  if (!req.body || !req.body.name || !req.body.price) {
     throw new BadRequestError("Missing name and/or price.");
   }
 
@@ -23,7 +25,7 @@ router.post("/", function (req, res) {
 });
 
 /** GET /items/:name: return single item */
-router.get("/:name", function (req, res) {
+router.get("/:name", checkItem, function (req, res) {
   // const item = items.find(item => item.name === req.params.name);
   const item = res.locals.item;
 
@@ -32,7 +34,7 @@ router.get("/:name", function (req, res) {
 });
 
 /** Patch /items/:name update an item and return updated item */
-router.patch("/:name", function (req, res) {
+router.patch("/:name", checkItem, function (req, res) {
   // const item = items.find(item => item.name === req.params.name);
   const item = res.locals.item;
 
@@ -45,7 +47,8 @@ router.patch("/:name", function (req, res) {
 });
 
 /**DELETE /items/:name delete an item and return a message */
-router.delete("/:name", function (req, res) {
+// TODO: in docstring show the expected JSON input and output
+router.delete("/:name", checkItem, function (req, res) {
   const itemIndex = items.findIndex(item => item.name === req.params.name);
 
   items.splice(itemIndex, 1);
