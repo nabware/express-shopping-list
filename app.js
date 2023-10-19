@@ -3,9 +3,11 @@ const app = express();
 
 const { NotFoundError } = require("./expressError");
 const itemRoutes = require("./routing/itemRoutes");
+const { checkItem } = require("./routing/middleware")
 
 app.use(express.json());
 
+app.use("/items/:name", checkItem);
 app.use("/items", itemRoutes);
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */

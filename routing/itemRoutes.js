@@ -1,6 +1,7 @@
 const express = require("express");
 
 const { items } = require("../fakeDb");
+const { BadRequestError } = require("../expressError");
 const router = new express.Router();
 
 /** GET /items: get list of items */
@@ -10,23 +11,30 @@ router.get("/", function (req, res) {
 
 /** POST /items: accept JSON body, add item, and return it */
 router.post("/", function (req, res) {
+  if (!req.body.name || !req.body.price) {
+    throw new BadRequestError("Missing name and/or price.");
+  }
+
   const { name, price } = req.body;
 
   items.push({ name, price });
 
-  return res.json({ added: { name, price } });
+  return res.status(201).json({ added: { name, price } });
 });
 
 /** GET /items/:name: return single item */
 router.get("/:name", function (req, res) {
-  const item = items.find(item => item.name === req.params.name);
+  // const item = items.find(item => item.name === req.params.name);
+  const item = res.locals.item;
 
   return res.json(item);
+  // return res.json(item);
 });
 
 /** Patch /items/:name update an item and return updated item */
 router.patch("/:name", function (req, res) {
-  const item = items.find(item => item.name === req.params.name);
+  // const item = items.find(item => item.name === req.params.name);
+  const item = res.locals.item;
 
   const newItem = req.body;
 
@@ -40,14 +48,9 @@ router.patch("/:name", function (req, res) {
 router.delete("/:name", function (req, res) {
   const itemIndex = items.findIndex(item => item.name === req.params.name);
 
-  const removedItem = items.splice(itemIndex, 1);
+  items.splice(itemIndex, 1);
 
   return res.json({ message: "Deleted" });
 });
-// /** DELETE /users/[id]: delete user, return {message: Deleted} */
-// router.delete("/:id", function (req, res) {
-//   db.User.delete(req.params.id);
-//   return res.json({ message: "Deleted" });
-// });
 
 module.exports = router;
