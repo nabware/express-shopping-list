@@ -82,3 +82,16 @@ describe("PATCH /items/:name", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+
+/** DELETE /items/:name - delete item,
+ *  return `{message: "Deleted"}` */
+
+describe("DELETE /items/:name", function () {
+  it("Deletes a single item", async function () {
+    const resp = await request(app)
+      .delete(`/items/${popsicle.name}`);
+    expect(resp.statusCode).toEqual(200);
+    expect(resp.body).toEqual({ message: "Deleted" });
+    // expect(items.length).toEqual(0);
+  });
+});
